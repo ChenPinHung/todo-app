@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的代辦事項</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>代辦事項清單</h1>
+  </header>
+
+  <main>
+    <form id="todo-form">
+      <input type="text" id="todo-input" placeholder="輸入待辦事項..." required>
+      <button type="submit">新增</button>
+      <p id="error-message" class="hidden">請輸入內容！</p>
+    </form>
+
+    <ul id="todo-list">
+      <!-- 待辦事項會由 JS 動態渲染在這裡 -->
+    </ul>
+  </main>
+
+  <footer>
+    <p>© 2026 我的代辦事項 APP</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
