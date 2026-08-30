@@ -1,0 +1,35 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "text": "中元節拜拜8/27",
+      "done": false
+    },
+    {
+      "id": "2",
+      "text": "模擬伺服器測試資料",
+      "done": true
+    },
+    {
+      "text": "學習Step 3-4  接下來的計畫",
+      "done": false,
+      "id": "c0p2nso6r90"
+    },
+    {
+      "text": "學習Step 3-4  接下來的計畫",
+      "done": false,
+      "id": "GNkXcgv1f-4"
+    },
+    {
+      "text": "中元節拜拜8/27",
+      "done": true,
+      "id": "MGPtRClnIH8"
+    },
+    {
+      "text": "學習Step 3-4  接下來的計畫",
+      "done": true,
+      "id": "eXAaxAq2n9s"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
