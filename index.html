@@ -17,7 +17,11 @@
       <button type="submit">新增</button>
       <p id="error-message" class="hidden">請輸入內容！</p>
     </form>
-
+<div id="filter-buttons">
+  <button data-filter="all" class="filter-btn active">全部</button>
+  <button data-filter="active" class="filter-btn">未完成</button>
+  <button data-filter="done" class="filter-btn">已完成</button>
+</div>
     <ul id="todo-list">
       <!-- 待辦事項會由 JS 動態渲染在這裡 -->
     </ul>

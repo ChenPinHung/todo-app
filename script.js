@@ -25,7 +25,25 @@ form.addEventListener("submit", function (event) {
 
 // 新增一筆待辦事項到畫面上
 let todos = []; // 用來存放待辦事項的陣列
+let currentFilter = "all"; // 記住目前選中的篩選條件，預設是「全部」
+const filterButtons = document.querySelectorAll(".filter-btn");
+// 幫每個篩選按鈕加上點擊事件
+filterButtons.forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    // 先把「所有」按鈕的 active 拿掉
+    filterButtons.forEach(function (b) {
+      b.classList.remove("active");
+    });
 
+    // 再幫「這個被點到的」按鈕加上 active
+    btn.classList.add("active");
+
+    // 更新目前的篩選條件（從 data-filter 屬性讀取）
+    currentFilter = btn.dataset.filter;
+
+    renderTodos(); // 重新畫面
+  });
+});
 function addTodo(text) {
   todos.push({ text: text, done: false }); // 新增時預設 done 是 false（未完成）
   saveTodos();      // 存進 localStorage
@@ -56,8 +74,13 @@ function addTodo(text) {
 // 根據 todos 陣列，重新畫出整個清單畫面
 function renderTodos() {
   list.innerHTML = "";
+ const filteredTodos = todos.filter(function (todo) {
+    if (currentFilter === "all") return true;         // 全部：都符合
+    if (currentFilter === "active") return !todo.done; // 未完成：done 是 false 的才符合
+    if (currentFilter === "done") return todo.done;     // 已完成：done 是 true 的才符合
+  });
 
-  todos.forEach(function (todo, index) {
+  filteredTodos.forEach(function (todo, index) {
     const li = document.createElement("li");
 
     const span = document.createElement("span");
