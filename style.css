@@ -114,3 +114,7 @@ header h1 {
   color: white;
   border-color: #4a90d9;
 }
+.overdue {
+  color: red;
+  font-weight: bold;
+}

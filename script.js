@@ -3,12 +3,13 @@ const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
 const errorMessage = document.getElementById("error-message");
-
+const dueDateInput = document.getElementById("todo-due-date");
 // 監聽表單送出事件
 form.addEventListener("submit", function (event) {
   event.preventDefault(); // 阻止表單預設送出行為（避免整頁重新整理）
 
   const value = input.value.trim(); // 取得輸入框文字，並去除頭尾空白
+ const dueDate = dueDateInput.value; // 讀取使用者選的日期（字串格式，例如 "2026-09-30"）
 
   if (value === "") {
     // 輸入是空的，顯示錯誤訊息
@@ -19,7 +20,8 @@ form.addEventListener("submit", function (event) {
   // 輸入有效，先把錯誤訊息藏起來
   errorMessage.classList.add("hidden");
 
-  addTodo(value);   // 呼叫新增待辦事項的函式
+  addTodo(value, dueDate); // 把日期一起傳進去
+  dueDateInput.value = ""; // 清空日期輸入框
   input.value = "";  // 清空輸入框，方便繼續打下一筆
 });
 
@@ -44,8 +46,8 @@ filterButtons.forEach(function (btn) {
     renderTodos(); // 重新畫面
   });
 });
-function addTodo(text) {
-  todos.push({ text: text, done: false }); // 新增時預設 done 是 false（未完成）
+function addTodo(text,dueDate) {
+  todos.push({ text: text, done: false , dueDate: dueDate}); // 新增時預設 done 是 false（未完成）
   saveTodos();      // 存進 localStorage
   renderTodos();     // 根據 todos 陣列，重新畫出整個清單
 }
@@ -85,7 +87,14 @@ function renderTodos() {
 
     const span = document.createElement("span");
     span.textContent = todo.text;
+    if (todo.dueDate) {
+      span.textContent += "（截止：" + todo.dueDate + "）";
+    }
+    const todayString = new Date().toISOString().split("T")[0]; // 取得今天的日期字串，格式跟 dueDate 一致
 
+  if (todo.dueDate < todayString && !todo.done) {
+    span.classList.add("overdue"); // 過期又還沒完成，加上特別的 class
+  }
     if (todo.done) {
       span.classList.add("done");
     }
