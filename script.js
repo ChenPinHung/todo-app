@@ -31,6 +31,7 @@ form.addEventListener("submit", function (event) {
 // 新增一筆待辦事項到畫面上
 let todos = []; // 用來存放待辦事項的陣列
 let currentFilter = "all"; // 記住目前選中的篩選條件，預設是「全部」
+let draggedIndex = null; // 記住目前正在被拖動的項目，是陣列裡的第幾個
 const filterButtons = document.querySelectorAll(".filter-btn");
 // 幫每個篩選按鈕加上點擊事件
 filterButtons.forEach(function (btn) {
@@ -87,6 +88,28 @@ function renderTodos() {
 
   filteredTodos.forEach(function (todo, index) {
     const li = document.createElement("li");
+    li.setAttribute("draggable", "true");
+    li.addEventListener("dragstart", function () {
+  draggedIndex = index; // 記住：現在正在拖的，是 filteredTodos 裡的第幾筆
+});
+
+li.addEventListener("dragover", function (event) {
+  event.preventDefault(); // 允許放置（預設是禁止的，這行負責打開允許）
+});
+
+li.addEventListener("drop", function () {
+  const draggedTodo = filteredTodos[draggedIndex]; // 拿出「被拖動的那一筆」資料（物件本身）
+  const dropTodo = filteredTodos[index];             // 拿出「放開位置」對應的那一筆資料
+
+  const draggedRealIndex = todos.indexOf(draggedTodo); // 找出這筆資料在 todos 裡真正的位置
+  const dropRealIndex = todos.indexOf(dropTodo);         // 找出目標位置在 todos 裡真正的位置
+
+  todos.splice(draggedRealIndex, 1);           // 從 todos 裡移除
+  todos.splice(dropRealIndex, 0, draggedTodo);  // 插入到 todos 裡正確的位置
+
+  saveTodos();
+  renderTodos();
+});
 
     const span = document.createElement("span");
     span.textContent = todo.text;
