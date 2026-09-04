@@ -4,12 +4,14 @@ const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
 const errorMessage = document.getElementById("error-message");
 const dueDateInput = document.getElementById("todo-due-date");
+const categoryInput = document.getElementById("todo-category");
 // 監聽表單送出事件
 form.addEventListener("submit", function (event) {
   event.preventDefault(); // 阻止表單預設送出行為（避免整頁重新整理）
 
   const value = input.value.trim(); // 取得輸入框文字，並去除頭尾空白
  const dueDate = dueDateInput.value; // 讀取使用者選的日期（字串格式，例如 "2026-09-30"）
+ const category = categoryInput.value; // 讀取使用者選的分類
 
   if (value === "") {
     // 輸入是空的，顯示錯誤訊息
@@ -20,9 +22,10 @@ form.addEventListener("submit", function (event) {
   // 輸入有效，先把錯誤訊息藏起來
   errorMessage.classList.add("hidden");
 
-  addTodo(value, dueDate); // 把日期一起傳進去
+  addTodo(value, dueDate, category); // 把分類也一起傳進去
   dueDateInput.value = ""; // 清空日期輸入框
   input.value = "";  // 清空輸入框，方便繼續打下一筆
+  categoryInput.value = ""; // 重設回「無分類」
 });
 
 // 新增一筆待辦事項到畫面上
@@ -46,10 +49,10 @@ filterButtons.forEach(function (btn) {
     renderTodos(); // 重新畫面
   });
 });
-function addTodo(text,dueDate) {
-  todos.push({ text: text, done: false , dueDate: dueDate}); // 新增時預設 done 是 false（未完成）
-  saveTodos();      // 存進 localStorage
-  renderTodos();     // 根據 todos 陣列，重新畫出整個清單
+function addTodo(text, dueDate, category) {
+  todos.push({ text: text, done: false, dueDate: dueDate, category: category });
+  saveTodos();
+  renderTodos();
 }
 
 /* fetch 版本（第三階段 Step A 學真後端時會用回來）
@@ -95,6 +98,9 @@ function renderTodos() {
   if (todo.dueDate < todayString && !todo.done) {
     span.classList.add("overdue"); // 過期又還沒完成，加上特別的 class
   }
+  if (todo.category) {
+  span.textContent = "【" + getCategoryLabel(todo.category) + "】" + span.textContent;
+}
     if (todo.done) {
       span.classList.add("done");
     }
@@ -154,7 +160,12 @@ function renderTodos() {
     list.appendChild(li);
   });
 }
-
+function getCategoryLabel(category) {
+  if (category === "work") return "工作";
+  if (category === "life") return "生活";
+  if (category === "finance") return "財務";
+  return "";
+}
 function saveTodos() {
   localStorage.setItem("todos", JSON.stringify(todos));
 }
