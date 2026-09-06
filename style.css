@@ -118,3 +118,6 @@ header h1 {
   color: red;
   font-weight: bold;
 }
+li {
+  touch-action: none;
+}
