@@ -5,6 +5,8 @@ const list = document.getElementById("todo-list");
 const errorMessage = document.getElementById("error-message");
 const dueDateInput = document.getElementById("todo-due-date");
 const categoryInput = document.getElementById("todo-category");
+let touchDraggedIndex = null;
+let touchTargetIndex = null;
 // 監聽表單送出事件
 form.addEventListener("submit", function (event) {
   event.preventDefault(); // 阻止表單預設送出行為（避免整頁重新整理）
@@ -88,9 +90,11 @@ function renderTodos() {
 
   filteredTodos.forEach(function (todo, index) {
     const li = document.createElement("li");
+     li.dataset.index = index;
     li.setAttribute("draggable", "true");
     li.addEventListener("dragstart", function () {
   draggedIndex = index; // 記住：現在正在拖的，是 filteredTodos 裡的第幾筆
+ 
 });
 
 li.addEventListener("dragover", function (event) {
@@ -110,7 +114,38 @@ li.addEventListener("drop", function () {
   saveTodos();
   renderTodos();
 });
+li.addEventListener("touchstart", function () {
+  touchDraggedIndex = index;
+  console.log("touchstart 觸發，拖的是第", index, "格");
+});
+li.addEventListener("touchmove", function (event) {
+  event.preventDefault(); // 阻止頁面跟著手指捲動
+  const touch = event.touches[0]; // 拿到第一根手指的資訊
+  const overElement = document.elementFromPoint(touch.clientX, touch.clientY); // 問瀏覽器：這個座標點上是哪個元素？
+  const overLi = overElement ? overElement.closest("li") : null; // 從那個元素往上找到所屬的 li
+  if (overLi) {
+    touchTargetIndex = Number(overLi.dataset.index); // 記住現在停在第幾格
+    console.log("現在在第", touchTargetIndex, "格上方");
+  }
+}, { passive: false });
+li.addEventListener("touchend", function () {
+  if (touchDraggedIndex === null || touchTargetIndex === null) return; // 沒有有效拖曳就直接跳出
 
+  const draggedTodo = filteredTodos[touchDraggedIndex]; // 被拖的那筆
+  const dropTodo = filteredTodos[touchTargetIndex];      // 放開位置那筆
+
+  const draggedRealIndex = todos.indexOf(draggedTodo);   // 回 todos 找真正位置
+  const dropRealIndex = todos.indexOf(dropTodo);
+
+  todos.splice(draggedRealIndex, 1);          // 先移除
+  todos.splice(dropRealIndex, 0, draggedTodo); // 再插入到目標位置
+
+  saveTodos();
+  renderTodos();
+
+  touchDraggedIndex = null; // 收尾：清掉，避免影響下一次拖曳
+  touchTargetIndex = null;
+});
     const span = document.createElement("span");
     span.textContent = todo.text;
     if (todo.dueDate) {
