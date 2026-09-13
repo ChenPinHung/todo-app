@@ -116,7 +116,6 @@ li.addEventListener("drop", function () {
 });
 li.addEventListener("touchstart", function () {
   touchDraggedIndex = index;
-  console.log("touchstart 觸發，拖的是第", index, "格");
 });
 li.addEventListener("touchmove", function (event) {
   event.preventDefault(); // 阻止頁面跟著手指捲動
@@ -125,7 +124,6 @@ li.addEventListener("touchmove", function (event) {
   const overLi = overElement ? overElement.closest("li") : null; // 從那個元素往上找到所屬的 li
   if (overLi) {
     touchTargetIndex = Number(overLi.dataset.index); // 記住現在停在第幾格
-    console.log("現在在第", touchTargetIndex, "格上方");
   }
 }, { passive: false });
 li.addEventListener("touchend", function () {
